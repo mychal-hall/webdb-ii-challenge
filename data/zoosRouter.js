@@ -71,32 +71,32 @@ router.post("/", (req, res) => {
     });
 });
 
-// Reports the number of updated zoos -- PUT /api/zoos/:id
+// Updates a zoo. Reports the number of updated zoos -- PUT /api/zoos/:id
+
+
+// Deletes the requested zoo. Reports the number of deleted zoos -- DELETE /api/zoos/:id
 router.delete("/:id", (req, res) => {
-  db("zoos")
-    .where({ id: req.params.id })
-    .del()
-    .then(count => {
-      if (count > 0) {
-        res.status(200).json(count);
-      } else {
+    db("zoos")
+      .where({ id: req.params.id })
+      .del()
+      .then(count => {
+        if (count > 0) {
+          res.status(200).json(count);
+        } else {
+          res
+            .status(404)
+            .json({ message: "No dice. Can not delete what isn't real." });
+        }
+      })
+      .catch(error => {
+        console.log(error);
         res
-          .status(404)
-          .json({ message: "No dice. Can not delete what isn't real." });
-      }
-    })
-    .catch(error => {
-      console.log(error);
-      res
-        .status(500)
-        .json({
-          message: "Error deleting the zoo. You can't just erase animals."
-        });
-    });
-});
-
-// Reports the number of deleted zoos -- DELETE /api/zoos/:id
-
+          .status(500)
+          .json({
+            message: "Error deleting the zoo. You can't just erase animals."
+          });
+      });
+  });
 
 
 module.exports = router;
