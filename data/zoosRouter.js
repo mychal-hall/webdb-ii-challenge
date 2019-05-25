@@ -31,8 +31,27 @@ router.get("/", async (req, res) => {
 });
 
 // Returns one zoo with a specific ID -- GET /api/zoos/:id
+router.get("/:id", async (req, res) => {
+  try {
+    const zoo = await db("zoos")
+      .where({ id: req.params.id })
+      .first();
+    if (zoo) {
+      res.status(200).json(zoo);
+    } else {
+      res
+        .status(404)
+        .json({ message: "No dice. No zoo is in existence with that ID" });
+    }
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "Error getting the zoo. Is the server online?" });
+  }
+});
 
-// Adds a new zoo to the database -- POST /api/zoos
+// Adds a new zoo to the database and returns the ID of the new zoo -- POST /api/zoos
 
 // Reports the number of updated zoos -- PUT /api/zoos/:id
 
