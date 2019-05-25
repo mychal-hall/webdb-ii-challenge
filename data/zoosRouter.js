@@ -52,7 +52,24 @@ router.get("/:id", async (req, res) => {
 });
 
 // Adds a new zoo to the database and returns the ID of the new zoo -- POST /api/zoos
-
+router.post("/", (req, res) => {
+  db("zoos")
+    .insert(req.body, "id")
+    .then(ids => {
+      db("zoos")
+        .where({ id: ids[0] })
+        .first()
+        .then(zoo => {
+          res.status(201).json(zoo);
+        })
+        .catch(error => {
+          console.log(error);
+          res
+            .status(500)
+            .json({ message: "Error creating a new zoo. That's not ideal." });
+        });
+    });
+})
 // Reports the number of updated zoos -- PUT /api/zoos/:id
 
 // Reports the number of deleted zoos -- DELETE /api/zoos/:id
