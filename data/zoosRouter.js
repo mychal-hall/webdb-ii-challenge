@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-// START KNEX config 
+// START KNEX config
 const knex = require("knex");
 
 const config = {
@@ -15,10 +15,20 @@ const db = knex(config);
 
 // END KNEX config
 
-
 // START Endpoints
 
 // Lists all the zoos in the database -- GET /api/zoos
+router.get("/", async (req, res) => {
+  try {
+    const zoos = await db("zoos");
+    res.status(200).json(zoos);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "Error getting zoos. Is the server online?" });
+  }
+});
 
 // Returns one zoo with a specific ID -- GET /api/zoos/:id
 
