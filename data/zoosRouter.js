@@ -72,31 +72,49 @@ router.post("/", (req, res) => {
 });
 
 // Updates a zoo. Reports the number of updated zoos -- PUT /api/zoos/:id
-
+router.put("/:id", (req, res) => {
+  db("zoos")
+    .where({ id: req.params.id })
+    .update(req.body)
+    .then(count => {
+      if (count > 0) {
+        res.status(200).json(count);
+      } else {
+        res
+          .status(404)
+          .json({ message: "No dice. No zoo is in existence with that ID" });
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      res
+        .status(500)
+        .json({
+          message: "You rolled a 1. Critical Fail. Deleting hard drive."
+        });
+    });
+});
 
 // Deletes the requested zoo. Reports the number of deleted zoos -- DELETE /api/zoos/:id
 router.delete("/:id", (req, res) => {
-    db("zoos")
-      .where({ id: req.params.id })
-      .del()
-      .then(count => {
-        if (count > 0) {
-          res.status(200).json(count);
-        } else {
-          res
-            .status(404)
-            .json({ message: "No dice. Can not delete what isn't real." });
-        }
-      })
-      .catch(error => {
-        console.log(error);
+  db("zoos")
+    .where({ id: req.params.id })
+    .del()
+    .then(count => {
+      if (count > 0) {
+        res.status(200).json(count);
+      } else {
         res
-          .status(500)
-          .json({
-            message: "Error deleting the zoo. You can't just erase animals."
-          });
+          .status(404)
+          .json({ message: "No dice. Can not delete what isn't real." });
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({
+        message: "Error deleting the zoo. You can't just erase animals."
       });
-  });
-
+    });
+});
 
 module.exports = router;
